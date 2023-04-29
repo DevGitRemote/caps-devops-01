@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  become: true
+  name: install jenkins java docker
+  tasks:
+  - name: install docker
+    script: docker.sh
+  - name: install java and jenkins
+    script: ja-jen.sh
+- hosts: kube-node1
+  become: true
+  name: install docker
+  tasks:
+  - name: installing docker
+    script: docker.sh
+- hosts: kube-master
+  become: true
+  name: install java docker
+  tasks:
+  - name: install java
+    apt: name=openjdk-11-jdk state=latest
+  - name: installing docker
+    script: docker.sh
+...
