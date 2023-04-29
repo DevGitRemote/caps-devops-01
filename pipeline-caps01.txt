@@ -1,0 +1,64 @@
+pipeline{
+  agent none
+  environment{
+    DOCKERHUB_CREDENTIALS=credentials('')
+  }
+  stages{
+    stage('Hello'){
+      agent{
+        label 'kubemaster'
+      }
+      steps{
+        echo 'Hello World'
+      }
+    }
+    stage ('git'){
+      agent{
+        label 'kubemaster'
+      }
+      
+      steps{
+        git 'https://github.com/DevGitRemote/website.git'
+      }
+    }
+    stage ('Docker Build'){
+      agent{
+        label 'kubemaster'
+      }
+      steps{
+        sh 'sudo docker build /var/lib/jenkins/workspace/Capstone-pro-1-devops-Pipeline -t devrajdock/caps1:latest'
+        echo 'Image Build Completed'
+      }
+    }
+    stage ('Docker Login'){
+      agent{
+        label 'kubemaster'
+      }
+      steps{
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        echo 'Docker Login Completed'
+      }
+    }
+    stage ('Push Image to DockerHub'){
+      agent{
+        label 'kubemaster'
+      }
+      steps{
+        sh 'sudo docker push devrajdock/caps1'
+        echo 'Image Pushed'
+        sh 'docker logout'
+        echo 'Logged Out'
+      }
+    }
+    stage ('Kubernetes'){
+      agent{
+        label 'kubemaster'
+      }
+      steps{
+	    sh 'kubectl apply -f ./deploy.yml'
+		sh 'kubectl apply -f ./svc.yml'
+		echo 'website deployed'
+	  }
+	}
+}
+}
