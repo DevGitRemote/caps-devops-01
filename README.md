@@ -6,3 +6,4 @@ This repo has codes for capstone project 01 devops. it has a map of project to u
 5. A docker image was build and pushed to dockerhub then in deployment yaml of k8s file this image was used.
 6. A node port service was run to make the deployment available via 30008 port.
 7. Final result can be seen yourPublicIP:30008
+8. KUBERNETES - KUBEADM should be installed MANUALLY not VIA ANSIBLE.
