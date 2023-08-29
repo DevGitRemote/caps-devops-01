@@ -1,0 +1,39 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy
+  labels:
+    deploy: deploylabels
+spec:
+  replicas: 2
+  selector:
+    matchLabels: 
+      deploy: deploylabels
+  template:
+    metadata: 
+      labels:
+        deploy: deploylabels
+    spec:
+      containers:
+        - name: deploycontain
+          image: devrajdock/caps1:latest
+          ports:
+            - containerPort: 80
+...
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: svc
+spec: 
+  type: NodePort
+  ports:
+    - targetPort: 80
+      port: 80
+      nodePort: 30008
+  selector:
+    deploy: deploylabels
+...
